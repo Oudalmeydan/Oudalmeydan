@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Muskalqasar</title>
+  <style>
+    body { background: #000; color: #D4AF37; font-family: serif; padding: 40px; }
+    .login-box { max-width: 400px; margin: 100px auto; border: 1px solid #D4AF37; padding: 30px; }
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #D4AF37; color: #fff; }
+    button { width: 100%; padding: 15px; background: #D4AF37; color: #000; font-weight: bold; border: none; cursor: pointer; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div id="loginBox" class="login-box">
+    <h1>MUSKALQASAR ADMIN</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+  <div id="adminPanel" class="hidden">
+    <h1>Add New Product</h1>
+    <input type="text" id="name" placeholder="Product Name: Luxury Men Perfume">
+    <input type="number" id="price" placeholder="Price: 30000">
+    <input type="text" id="image" placeholder="Image URL">
+    <textarea id="desc" placeholder="Description"></textarea>
+    <button onclick="addProduct()">Add Product to Site</button>
+    <hr style="margin: 30px 0; border-color: #D4AF37;">
+    <h2>Orders List</h2>
+    <div id="orders"></div>
+  </div>
+<script>
+const ADMIN_EMAIL = "asifchand1212@gmail.com";
+const ADMIN_PASS = "admin123";
+function login() {
+  if(document.getElementById('email').value === ADMIN_EMAIL && 
+     document.getElementById('pass').value === ADMIN_PASS) {
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadOrders();
+  } else {
+    alert('Access Denied. Sirf Asif Chand login kar sakta hai.');
+  }
+}
+function addProduct() {
+  const product = {
+    name: document.getElementById('name').value,
+    price: document.getElementById('price').value,
+    image: document.getElementById('image').value,
+    desc: document.getElementById('desc').value
+  };
+  let products = JSON.parse(localStorage.getItem('products') || '[]');
+  products.push(product);
+  localStorage.setItem('products', JSON.stringify(products));
+  alert('Product added! Site pe live ho gaya.');
+}
+function loadOrders() {
+  let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  document.getElementById('orders').innerHTML = orders.map(o => 
+    `<p style="border-bottom:1px solid #333; padding:10px 0;">
+    ${o.product} - ${o.name} - ${o.phone} - ${o.address} - PKR ${o.total}
+    </p>`
+  ).join('');
+}
+</script>
+</body>
+</html>
