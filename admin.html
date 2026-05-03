@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Muskalqasar</title>
+  <style>
+    body { background: #000; color: #D4AF37; font-family: serif; padding: 40px; }
+    .login-box { max-width: 400px; margin: 100px auto; border: 1px solid #D4AF37; padding: 30px; }
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #D4AF37; color: #fff; }
+    button { width: 100%; padding: 15px; background: #D4AF37; color: #000; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; }
+    .hidden { display: none; }
+    .order-box { border: 1px solid #333; padding: 15px; margin: 10px 0; }
+    h1, h2 { text-align: center; }
+  </style>
+</head>
+<body>
+  <div id="loginBox" class="login-box">
+    <h1>MUSKALQASAR ADMIN</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+  <div id="adminPanel" class="hidden">
+    <h1>Add New Product</h1>
+    <input type="text" id="name" placeholder="Product Name: Luxury Men Perfume">
+    <input type="number" id="price" placeholder="Price: 30000">
+    <input type="text" id="image" placeholder="Image URL">
+    <textarea id="desc" placeholder="Description"></textarea>
+    <button onclick="addProduct()">Add Product to Site</button>
+    <hr style="margin: 40px 0; border-color: #D4AF37;">
+    <h2>Orders List</h2>
+    <div id="orders"></div>
+  </div>
+<script>
+const ADMIN_EMAIL = "asifchand1212@gmail.com";
+const ADMIN_PASS = "admin123";
+function login() {
+  if(document.getElementById('email').value === ADMIN_EMAIL && 
+     document.getElementById('pass').value === ADMIN_PASS) {
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadOrders();
+  } else {
+    alert('Access Denied. Sirf Asif Chand login kar sakta hai.');
+  }
+}
+function addProduct() {
+  const product = {
+    name: document.getElementById('name').value,
+    price: document.getElementById('price').value,
+    image: document.getElementById('image').value,
+    desc: document.getElementById('desc').value
+  };
+  if(!product.name || !product.price) {
+    alert('Name aur Price zaroori hai');
+    return;
+  }
+  let products = JSON.parse(localStorage.getItem('products') || '[]');
+  products.push(product);
+  localStorage.setItem('products', JSON.stringify(products));
+  alert('Product added! Site pe live ho gaya.');
+  document.getElementById('name').value = '';
+  document.getElementById('price').value = '';
+  document.getElementById('image').value = '';
+  document.getElementById('desc').value = '';
+}
+function loadOrders() {
+  let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  if(orders.length === 0) {
+    document.getElementById('orders').innerHTML = '<p style="text-align:center; color:#666;">Abhi koi order nahi aya</p>';
+    return;
+  }
+  document.getElementById('orders').innerHTML = orders.map((o, i) => 
+    `<div class="order-box">
+      <strong>Order #${i+1}</strong><br>
+      Product: ${o.product} <br>
+      Name: ${o.name} <br>
+      Phone: ${o.phone} <br>
+      Address: ${o.address} <br>
+      Total: PKR ${parseInt(o.total).toLocaleString()} <br>
+      Date: ${o.date}
+    </div>`
+  ).join('');
+}
+</script>
+</body>
+</html>
